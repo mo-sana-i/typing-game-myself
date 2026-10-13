@@ -1,4 +1,4 @@
-const correctPassword = "好きなパスワード";
+const correctPassword = "mosanai";
 
 const loginScreen = document.getElementById("loginScreen");
 const siteContent = document.getElementById("siteContent");
