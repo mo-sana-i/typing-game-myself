@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>タイピングゲーム</title>
+  <title>英文タイピングゲーム</title>
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-  <!-- ログイン画面 -->
+  <!-- パスワード画面 -->
   <div id="loginScreen">
-    <h1>タイピングゲーム</h1>
+    <h1>英文タイピングゲーム</h1>
     <p>パスワードを入力してください</p>
 
     <input
@@ -24,18 +24,18 @@
     <p id="loginMessage"></p>
   </div>
 
-  <!-- ゲーム本体 -->
+  <!-- ゲーム画面 -->
   <div id="siteContent" class="hidden">
     <main class="container">
-      <h1>タイピングゲーム</h1>
+      <h1>英文タイピングゲーム</h1>
 
-      <!-- ステージ選択画面 -->
+      <!-- ステージ選択 -->
       <section id="stageSelect">
         <h2>ステージを選択</h2>
         <div id="stageList"></div>
       </section>
 
-      <!-- ゲーム画面 -->
+      <!-- ゲーム本体 -->
       <section id="game" class="hidden">
         <h2 id="stageTitle"></h2>
 
@@ -61,8 +61,9 @@
         <input
           id="answerInput"
           type="text"
-          placeholder="ここに入力してください"
+          placeholder="表示された英文を入力してください"
           autocomplete="off"
+          spellcheck="false"
         >
 
         <p id="message"></p>
