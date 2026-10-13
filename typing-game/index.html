@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>タイピングゲーム</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <!-- ログイン画面 -->
+  <div id="loginScreen">
+    <h1>タイピングゲーム</h1>
+    <p>パスワードを入力してください</p>
+
+    <input
+      id="passwordInput"
+      type="password"
+      placeholder="パスワード"
+    >
+
+    <button id="loginButton">ログイン</button>
+
+    <p id="loginMessage"></p>
+  </div>
+
+  <!-- ゲーム本体 -->
+  <div id="siteContent" class="hidden">
+    <main class="container">
+      <h1>タイピングゲーム</h1>
+
+      <!-- ステージ選択画面 -->
+      <section id="stageSelect">
+        <h2>ステージを選択</h2>
+        <div id="stageList"></div>
+      </section>
+
+      <!-- ゲーム画面 -->
+      <section id="game" class="hidden">
+        <h2 id="stageTitle"></h2>
+
+        <div class="info">
+          <span>
+            問題
+            <b id="questionNumber">1 / 1</b>
+          </span>
+
+          <span>
+            正解
+            <b id="correctCount">0</b>
+          </span>
+
+          <span>
+            ミス
+            <b id="missCount">0</b>
+          </span>
+        </div>
+
+        <p id="question"></p>
+
+        <input
+          id="answerInput"
+          type="text"
+          placeholder="ここに入力してください"
+          autocomplete="off"
+        >
+
+        <p id="message"></p>
+
+        <button id="backButton">
+          ステージ選択に戻る
+        </button>
+      </section>
+    </main>
+  </div>
+
+  <script src="stages.js"></script>
+  <script src="script.js"></script>
+  <script src="login.js"></script>
+</body>
+</html>
