@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>英文タイピングゲーム</title>
+  <title>ローマ字タイピングゲーム</title>
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
   <!-- パスワード画面 -->
   <div id="loginScreen">
-    <h1>英文タイピングゲーム</h1>
+    <h1>ローマ字タイピング</h1>
     <p>パスワードを入力してください</p>
 
     <input
@@ -27,15 +27,13 @@
   <!-- ゲーム画面 -->
   <div id="siteContent" class="hidden">
     <main class="container">
-      <h1>英文タイピングゲーム</h1>
+      <h1>ローマ字タイピング</h1>
 
-      <!-- ステージ選択 -->
       <section id="stageSelect">
         <h2>ステージを選択</h2>
         <div id="stageList"></div>
       </section>
 
-      <!-- ゲーム本体 -->
       <section id="game" class="hidden">
         <h2 id="stageTitle"></h2>
 
@@ -56,15 +54,21 @@
           </span>
         </div>
 
+        <!-- 日本語の問題文 -->
         <p id="question"></p>
 
+        <!-- ローマ字入力欄 -->
         <input
           id="answerInput"
           type="text"
-          placeholder="表示された英文を入力してください"
+          placeholder="ローマ字で入力してください"
           autocomplete="off"
+          autocapitalize="off"
           spellcheck="false"
         >
+
+        <!-- 正しいローマ字 -->
+        <p id="romajiHint"></p>
 
         <p id="message"></p>
 
