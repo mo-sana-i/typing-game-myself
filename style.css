@@ -10,23 +10,21 @@ body {
   color: #1f2937;
 }
 
-/* 共通コンテナ */
 .container {
-  width: min(700px, 92%);
+  width: min(800px, 92%);
   margin: 40px auto;
   padding: 30px;
-  background: #ffffff;
+  background: white;
   border-radius: 16px;
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
   text-align: center;
 }
 
-/* ログイン画面 */
 #loginScreen {
   width: min(420px, 90%);
   margin: 100px auto;
   padding: 30px;
-  background: #ffffff;
+  background: white;
   border-radius: 16px;
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
   text-align: center;
@@ -45,7 +43,6 @@ body {
   font-size: 16px;
 }
 
-/* ボタン */
 button {
   border: none;
   border-radius: 8px;
@@ -77,7 +74,6 @@ button {
   background: #1d4ed8;
 }
 
-/* 情報表示 */
 .info {
   display: flex;
   justify-content: space-around;
@@ -88,9 +84,8 @@ button {
   border-radius: 8px;
 }
 
-/* 問題文 */
 #question {
-  min-height: 70px;
+  min-height: 80px;
   margin: 20px 0;
   padding: 20px;
   background: #e0f2fe;
@@ -101,13 +96,14 @@ button {
   overflow-wrap: anywhere;
 }
 
-/* 入力欄 */
 #answerInput {
   width: 100%;
   padding: 16px;
   border: 2px solid #94a3b8;
   border-radius: 8px;
+  font-family: Consolas, monospace;
   font-size: 20px;
+  letter-spacing: 1px;
 }
 
 #answerInput:focus {
@@ -120,13 +116,19 @@ button {
   background: #fef2f2;
 }
 
+#romajiHint {
+  min-height: 24px;
+  margin: 10px 0;
+  color: #64748b;
+  font-family: Consolas, monospace;
+}
+
 #message,
 #loginMessage {
   min-height: 24px;
   color: #dc2626;
 }
 
-/* 戻るボタン */
 #backButton {
   margin-top: 20px;
   padding: 12px 18px;
@@ -138,13 +140,11 @@ button {
   background: #475569;
 }
 
-/* 非表示 */
 .hidden {
   display: none;
 }
 
-/* スマートフォン向け */
-@media (max-width: 500px) {
+@media (max-width: 600px) {
   .container {
     margin: 20px auto;
     padding: 20px;
@@ -152,6 +152,10 @@ button {
 
   #question {
     font-size: 20px;
+  }
+
+  #answerInput {
+    font-size: 18px;
   }
 
   .info {
