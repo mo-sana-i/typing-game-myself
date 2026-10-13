@@ -1,0 +1,160 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: sans-serif;
+  background: #eef2ff;
+  color: #1f2937;
+}
+
+/* 共通コンテナ */
+.container {
+  width: min(700px, 92%);
+  margin: 40px auto;
+  padding: 30px;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+/* ログイン画面 */
+#loginScreen {
+  width: min(420px, 90%);
+  margin: 100px auto;
+  padding: 30px;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+#loginScreen h1 {
+  color: #2563eb;
+}
+
+#passwordInput {
+  width: 100%;
+  padding: 14px;
+  margin: 10px 0;
+  border: 2px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+/* ボタン */
+button {
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+#loginButton {
+  width: 100%;
+  padding: 14px;
+  background: #2563eb;
+  color: white;
+}
+
+#loginButton:hover {
+  background: #1d4ed8;
+}
+
+.stage-button {
+  display: block;
+  width: 100%;
+  margin: 12px 0;
+  padding: 16px;
+  background: #2563eb;
+  color: white;
+}
+
+.stage-button:hover {
+  background: #1d4ed8;
+}
+
+/* 情報表示 */
+.info {
+  display: flex;
+  justify-content: space-around;
+  gap: 10px;
+  margin: 24px 0;
+  padding: 14px;
+  background: #f1f5f9;
+  border-radius: 8px;
+}
+
+/* 問題文 */
+#question {
+  min-height: 70px;
+  margin: 20px 0;
+  padding: 20px;
+  background: #e0f2fe;
+  border-radius: 8px;
+  font-size: 24px;
+  font-weight: bold;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+/* 入力欄 */
+#answerInput {
+  width: 100%;
+  padding: 16px;
+  border: 2px solid #94a3b8;
+  border-radius: 8px;
+  font-size: 20px;
+}
+
+#answerInput:focus {
+  outline: none;
+  border-color: #2563eb;
+}
+
+#answerInput.wrong {
+  border-color: #dc2626;
+  background: #fef2f2;
+}
+
+#message,
+#loginMessage {
+  min-height: 24px;
+  color: #dc2626;
+}
+
+/* 戻るボタン */
+#backButton {
+  margin-top: 20px;
+  padding: 12px 18px;
+  background: #64748b;
+  color: white;
+}
+
+#backButton:hover {
+  background: #475569;
+}
+
+/* 非表示 */
+.hidden {
+  display: none;
+}
+
+/* スマートフォン向け */
+@media (max-width: 500px) {
+  .container {
+    margin: 20px auto;
+    padding: 20px;
+  }
+
+  #question {
+    font-size: 20px;
+  }
+
+  .info {
+    font-size: 14px;
+  }
+}
