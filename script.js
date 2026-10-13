@@ -5,7 +5,8 @@ const game = document.getElementById("game");
 const stageTitle = document.getElementById("stageTitle");
 const question = document.getElementById("question");
 const answerInput = document.getElementById("answerInput");
-const romajiHint = document.getElementById("romajiHint");
+
+const progress = document.getElementById("progress");
 const message = document.getElementById("message");
 
 const questionNumber = document.getElementById("questionNumber");
@@ -15,217 +16,261 @@ const backButton = document.getElementById("backButton");
 
 let currentStage = null;
 let currentQuestionIndex = 0;
-let currentRomaji = "";
+let currentCandidates = [];
 
 let correct = 0;
 let miss = 0;
 let completed = false;
-let mistakeAlreadyCounted = false;
+
+let typedText = "";
+let mistakeCountedForCurrentInput = false;
 
 
 // ====================================
-// 日本語をローマ字に変換する関数
+// 日本語をローマ字へ変換
 // ====================================
 
 function hiraganaToRomaji(text) {
   const table = {
-    "あ": "a",
-    "い": "i",
-    "う": "u",
-    "え": "e",
-    "お": "o",
+    "あ": ["a"],
+    "い": ["i"],
+    "う": ["u"],
+    "え": ["e"],
+    "お": ["o"],
 
-    "か": "ka",
-    "き": "ki",
-    "く": "ku",
-    "け": "ke",
-    "こ": "ko",
+    "か": ["ka"],
+    "き": ["ki"],
+    "く": ["ku"],
+    "け": ["ke"],
+    "こ": ["ko"],
 
-    "さ": "sa",
-    "し": "shi",
-    "す": "su",
-    "せ": "se",
-    "そ": "so",
+    "さ": ["sa"],
+    "し": ["shi", "si"],
+    "す": ["su"],
+    "せ": ["se"],
+    "そ": ["so"],
 
-    "た": "ta",
-    "ち": "chi",
-    "つ": "tsu",
-    "て": "te",
-    "と": "to",
+    "た": ["ta"],
+    "ち": ["chi", "ti"],
+    "つ": ["tsu", "tu"],
+    "て": ["te"],
+    "と": ["to"],
 
-    "な": "na",
-    "に": "ni",
-    "ぬ": "nu",
-    "ね": "ne",
-    "の": "no",
+    "な": ["na"],
+    "に": ["ni"],
+    "ぬ": ["nu"],
+    "ね": ["ne"],
+    "の": ["no"],
 
-    "は": "ha",
-    "ひ": "hi",
-    "ふ": "fu",
-    "へ": "he",
-    "ほ": "ho",
+    "は": ["ha"],
+    "ひ": ["hi"],
+    "ふ": ["fu", "hu"],
+    "へ": ["he"],
+    "ほ": ["ho"],
 
-    "ま": "ma",
-    "み": "mi",
-    "む": "mu",
-    "め": "me",
-    "も": "mo",
+    "ま": ["ma"],
+    "み": ["mi"],
+    "む": ["mu"],
+    "め": ["me"],
+    "も": ["mo"],
 
-    "や": "ya",
-    "ゆ": "yu",
-    "よ": "yo",
+    "や": ["ya"],
+    "ゆ": ["yu"],
+    "よ": ["yo"],
 
-    "ら": "ra",
-    "り": "ri",
-    "る": "ru",
-    "れ": "re",
-    "ろ": "ro",
+    "ら": ["ra"],
+    "り": ["ri"],
+    "る": ["ru"],
+    "れ": ["re"],
+    "ろ": ["ro"],
 
-    "わ": "wa",
-    "を": "wo",
-    "ん": "n",
+    "わ": ["wa"],
+    "を": ["wo", "o"],
+    "ん": ["n", "nn"],
 
-    "が": "ga",
-    "ぎ": "gi",
-    "ぐ": "gu",
-    "げ": "ge",
-    "ご": "go",
+    "が": ["ga"],
+    "ぎ": ["gi"],
+    "ぐ": ["gu"],
+    "げ": ["ge"],
+    "ご": ["go"],
 
-    "ざ": "za",
-    "じ": "ji",
-    "ず": "zu",
-    "ぜ": "ze",
-    "ぞ": "zo",
+    "ざ": ["za"],
+    "じ": ["ji", "zi"],
+    "ず": ["zu"],
+    "ぜ": ["ze"],
+    "ぞ": ["zo"],
 
-    "だ": "da",
-    "ぢ": "ji",
-    "づ": "zu",
-    "で": "de",
-    "ど": "do",
+    "だ": ["da"],
+    "ぢ": ["ji", "di"],
+    "づ": ["zu", "du"],
+    "で": ["de"],
+    "ど": ["do"],
 
-    "ば": "ba",
-    "び": "bi",
-    "ぶ": "bu",
-    "べ": "be",
-    "ぼ": "bo",
+    "ば": ["ba"],
+    "び": ["bi"],
+    "ぶ": ["bu"],
+    "べ": ["be"],
+    "ぼ": ["bo"],
 
-    "ぱ": "pa",
-    "ぴ": "pi",
-    "ぷ": "pu",
-    "ぺ": "pe",
-    "ぽ": "po",
+    "ぱ": ["pa"],
+    "ぴ": ["pi"],
+    "ぷ": ["pu"],
+    "ぺ": ["pe"],
+    "ぽ": ["po"],
 
-    "きゃ": "kya",
-    "きゅ": "kyu",
-    "きょ": "kyo",
+    "きゃ": ["kya"],
+    "きゅ": ["kyu"],
+    "きょ": ["kyo"],
 
-    "しゃ": "sha",
-    "しゅ": "shu",
-    "しょ": "sho",
+    "しゃ": ["sha", "sya"],
+    "しゅ": ["shu", "syu"],
+    "しょ": ["sho", "syo"],
 
-    "ちゃ": "cha",
-    "ちゅ": "chu",
-    "ちょ": "cho",
+    "ちゃ": ["cha", "tya"],
+    "ちゅ": ["chu", "tyu"],
+    "ちょ": ["cho", "tyo"],
 
-    "にゃ": "nya",
-    "にゅ": "nyu",
-    "にょ": "nyo",
+    "にゃ": ["nya"],
+    "にゅ": ["nyu"],
+    "にょ": ["nyo"],
 
-    "ひゃ": "hya",
-    "ひゅ": "hyu",
-    "ひょ": "hyo",
+    "ひゃ": ["hya"],
+    "ひゅ": ["hyu"],
+    "ひょ": ["hyo"],
 
-    "みゃ": "mya",
-    "みゅ": "myu",
-    "みょ": "myo",
+    "みゃ": ["mya"],
+    "みゅ": ["myu"],
+    "みょ": ["myo"],
 
-    "りゃ": "rya",
-    "りゅ": "ryu",
-    "りょ": "ryo",
+    "りゃ": ["rya"],
+    "りゅ": ["ryu"],
+    "りょ": ["ryo"],
 
-    "ぎゃ": "gya",
-    "ぎゅ": "gyu",
-    "ぎょ": "gyo",
+    "ぎゃ": ["gya"],
+    "ぎゅ": ["gyu"],
+    "ぎょ": ["gyo"],
 
-    "じゃ": "ja",
-    "じゅ": "ju",
-    "じょ": "jo",
+    "じゃ": ["ja", "jya", "zya"],
+    "じゅ": ["ju", "jyu", "zyu"],
+    "じょ": ["jo", "jyo", "zyo"],
 
-    "びゃ": "bya",
-    "びゅ": "byu",
-    "びょ": "byo",
+    "びゃ": ["bya"],
+    "びゅ": ["byu"],
+    "びょ": ["byo"],
 
-    "ぴゃ": "pya",
-    "ぴゅ": "pyu",
-    "ぴょ": "pyo",
+    "ぴゃ": ["pya"],
+    "ぴゅ": ["pyu"],
+    "ぴょ": ["pyo"],
 
-    "ふぁ": "fa",
-    "ふぃ": "fi",
-    "ふぇ": "fe",
-    "ふぉ": "fo",
+    "ふぁ": ["fa"],
+    "ふぃ": ["fi"],
+    "ふぇ": ["fe"],
+    "ふぉ": ["fo"],
 
-    "うぃ": "wi",
-    "うぇ": "we",
-    "うぉ": "who",
+    "うぃ": ["wi"],
+    "うぇ": ["we"],
+    "うぉ": ["who"],
 
-    "てぃ": "thi",
-    "でぃ": "dhi",
+    "てぃ": ["thi"],
+    "でぃ": ["dhi"],
 
-    "っ": "",
-    "ー": "-",
-
-    "、": ",",
-    "。": ".",
-    "！": "!",
-    "？": "?",
-    "「": "\"",
-    "」": "\"",
-    "（": "(",
-    "）": ")",
-    "・": "/",
-    "　": " "
+    "ー": ["-"],
+    "、": [","],
+    "。": ["."],
+    "！": ["!"],
+    "？": ["?"],
+    "「": ["\""],
+    "」": ["\""],
+    "（": ["("],
+    "）": [")"],
+    "・": ["/"],
+    "　": [" "],
+    " ": [" "]
   };
 
-  let result = "";
+  // 変換結果を複数パターンで保持する
+  let results = [""];
   let i = 0;
 
   while (i < text.length) {
     const twoCharacters = text.substring(i, i + 2);
     const oneCharacter = text.substring(i, i + 1);
 
-    // 拗音など、2文字の組み合わせを優先
-    if (table[twoCharacters] !== undefined) {
-      result += table[twoCharacters];
-      i += 2;
-      continue;
-    }
-
-    // 小さい「っ」は、次の子音を重ねる
+    // 小さい「っ」
     if (oneCharacter === "っ") {
       const nextTwo = text.substring(i + 1, i + 3);
       const nextOne = text.substring(i + 1, i + 2);
 
-      if (table[nextTwo]) {
-        result += table[nextTwo].charAt(0);
-      } else if (table[nextOne]) {
-        result += table[nextOne].charAt(0);
-      }
+      let nextOptions = table[nextTwo] || table[nextOne] || [""];
+      let consonants = [];
 
+      nextOptions.forEach((option) => {
+        if (option.length > 0) {
+          consonants.push(option.charAt(0));
+        }
+      });
+
+      const newResults = [];
+
+      results.forEach((result) => {
+        consonants.forEach((consonant) => {
+          newResults.push(result + consonant);
+        });
+      });
+
+      results = newResults;
       i++;
       continue;
     }
 
-    if (table[oneCharacter] !== undefined) {
-      result += table[oneCharacter];
+    let options = table[twoCharacters];
+
+    if (options) {
+      i += 2;
     } else {
-      // 漢字や英数字など、変換できない文字はそのまま残す
-      result += oneCharacter;
+      options = table[oneCharacter];
+
+      if (!options) {
+        options = [oneCharacter];
+      }
+
+      i++;
     }
 
-    i++;
+    const newResults = [];
+
+    results.forEach((result) => {
+      options.forEach((option) => {
+        newResults.push(result + option);
+      });
+    });
+
+    results = newResults;
   }
 
-  return result;
+  return results;
+}
+
+
+// ====================================
+// 文字列を正規化
+// ====================================
+
+function normalizeInput(text) {
+  return text
+    .toLowerCase()
+    .replace(/[Ａ-Ｚａ-ｚ０-９]/g, (character) => {
+      return String.fromCharCode(character.charCodeAt(0) - 0xfee0);
+    });
+}
+
+
+// ====================================
+// 連続入力の候補を取得
+// ====================================
+
+function createCandidates(text) {
+  return hiraganaToRomaji(text).map(normalizeInput);
 }
 
 
@@ -252,17 +297,16 @@ function createStageButtons() {
 
 
 // ====================================
-// ゲームを開始
+// ゲーム開始
 // ====================================
 
 function startGame(stageIndex) {
   currentStage = stages[stageIndex];
-  currentQuestionIndex = 0;
 
+  currentQuestionIndex = 0;
   correct = 0;
   miss = 0;
   completed = false;
-  mistakeAlreadyCounted = false;
 
   stageSelect.classList.add("hidden");
   game.classList.remove("hidden");
@@ -280,31 +324,67 @@ function startGame(stageIndex) {
 
 
 // ====================================
-// 問題を表示
+// 現在の問題を表示
 // ====================================
 
 function showQuestion() {
   const currentQuestion =
     currentStage.questions[currentQuestionIndex];
 
-  currentRomaji = hiraganaToRomaji(currentQuestion);
+  // 個別のromajiが指定されている場合は、それを使う
+  if (
+    currentStage.romaji &&
+    currentStage.romaji[currentQuestionIndex]
+  ) {
+    currentCandidates =
+      currentStage.romaji[currentQuestionIndex]
+        .map(normalizeInput);
+  } else {
+    // 指定がなければ自動変換
+    currentCandidates =
+      createCandidates(currentQuestion);
+  }
+
+  typedText = "";
+  mistakeCountedForCurrentInput = false;
 
   question.textContent = currentQuestion;
-  romajiHint.textContent = "";
 
   questionNumber.textContent =
     `${currentQuestionIndex + 1} / ${currentStage.questions.length}`;
 
-  answerInput.value = "";
-  answerInput.classList.remove("wrong");
+  progress.textContent = "";
   message.textContent = "";
 
-  mistakeAlreadyCounted = false;
+  answerInput.value = "";
+  answerInput.classList.remove("wrong");
 }
 
 
 // ====================================
-// 入力を確認
+// 現在の入力が候補の先頭部分か確認
+// ====================================
+
+function isValidPrefix(input) {
+  return currentCandidates.some((candidate) => {
+    return candidate.startsWith(input);
+  });
+}
+
+
+// ====================================
+// 現在の入力が完全一致か確認
+// ====================================
+
+function isComplete(input) {
+  return currentCandidates.some((candidate) => {
+    return candidate === input;
+  });
+}
+
+
+// ====================================
+// 入力処理
 // ====================================
 
 answerInput.addEventListener("input", () => {
@@ -312,32 +392,37 @@ answerInput.addEventListener("input", () => {
     return;
   }
 
-  const typedText = answerInput.value.toLowerCase();
+  typedText = normalizeInput(answerInput.value);
 
-  const isCorrectSoFar =
-    currentRomaji.startsWith(typedText);
-
-  if (isCorrectSoFar) {
+  // 入力途中が正しい場合
+  if (isValidPrefix(typedText)) {
     answerInput.classList.remove("wrong");
     message.textContent = "";
   } else {
+    // 間違っても入力は止めない
     answerInput.classList.add("wrong");
-    message.textContent = "入力が違います";
+    message.textContent = "ミスがあります。そのまま続けてください";
 
-    if (!mistakeAlreadyCounted) {
+    if (!mistakeCountedForCurrentInput) {
       miss++;
       missCount.textContent = miss;
-      mistakeAlreadyCounted = true;
+      mistakeCountedForCurrentInput = true;
     }
   }
 
-  // 正しい入力に戻ったら、次のミスを数えられるようにする
-  if (isCorrectSoFar) {
-    mistakeAlreadyCounted = false;
-  }
+  // 進捗表示
+  const longestCandidate =
+    currentCandidates.reduce((longest, candidate) => {
+      return candidate.length > longest.length
+        ? candidate
+        : longest;
+    }, "");
 
-  // 完全一致したら次の問題へ
-  if (typedText === currentRomaji) {
+  progress.textContent =
+    `${typedText.length} / ${longestCandidate.length}`;
+
+  // 完全一致した場合
+  if (isComplete(typedText)) {
     correct++;
     correctCount.textContent = correct;
 
@@ -347,10 +432,9 @@ answerInput.addEventListener("input", () => {
       completed = true;
 
       question.textContent = "ステージクリア！";
-      romajiHint.textContent =
+      progress.textContent = "";
+      message.textContent =
         `正解数：${correct}　ミス：${miss}`;
-
-      message.textContent = "お疲れさまでした！";
 
       answerInput.value = "";
       answerInput.disabled = true;
@@ -364,19 +448,7 @@ answerInput.addEventListener("input", () => {
 
 
 // ====================================
-// ヒント表示
-// ====================================
-
-answerInput.addEventListener("focus", () => {
-  if (!completed && currentRomaji) {
-    romajiHint.textContent =
-      "ローマ字で入力してください";
-  }
-});
-
-
-// ====================================
-// ステージ選択に戻る
+// ステージ選択へ戻る
 // ====================================
 
 backButton.addEventListener("click", () => {
@@ -385,17 +457,16 @@ backButton.addEventListener("click", () => {
 
   currentStage = null;
   currentQuestionIndex = 0;
-  currentRomaji = "";
+  currentCandidates = [];
 
   answerInput.disabled = false;
   answerInput.value = "";
   answerInput.classList.remove("wrong");
 
+  progress.textContent = "";
   message.textContent = "";
-  romajiHint.textContent = "";
 
   completed = false;
-  mistakeAlreadyCounted = false;
 });
 
 
